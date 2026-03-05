@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BuildingResource" load_steps=3 format=3]
+
+[ext_resource type="Resource" path="res://data/test_mission.tres" id="1_mission"]
+[ext_resource type="Script" path="res://src/core/base/BuildingResource.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+building_id = "cabin_01"
+building_name = "작은 오두막"
+available_missions = Array[Resource("res://src/core/base/MissionResource.gd")]([ExtResource("1_mission")])
+harmony_xp_gain = 50

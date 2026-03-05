@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/ui/main_hud/HarmonyLevelUI.gd" id="1_script"]
+[ext_resource type="Theme" path="res://assets/themes/main_theme.tres" id="2_theme"]
+
+[node name="HarmonyLevelUI" type="Control"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 80.0
+grow_horizontal = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="LevelLabel" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+text = "Lv. 1"
+
+[node name="XPBar" type="TextureProgressBar" parent="HBoxContainer"]
+custom_minimum_size = Vector2(400, 20)
+layout_mode = 2
+size_flags_vertical = 4
+value = 50.0
+
+[node name="TreatsContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 100.0
+offset_right = -30.0
+offset_bottom = 140.0
+grow_horizontal = 0
+alignment = 2
+
+[node name="Icon" type="Label" parent="TreatsContainer"]
+layout_mode = 2
+text = "🦴"
+
+[node name="TreatsLabel" type="Label" parent="TreatsContainer"]
+layout_mode = 2
+text = "0"

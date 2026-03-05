@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DogResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/base/DogResource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+dog_id = "bori"
+dog_name = "보리"
+breed = "진돗개"
+move_speed_multiplier = 1.1

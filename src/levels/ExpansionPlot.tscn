@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/levels/ExpansionPlot.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://src/levels/FogCloud.tscn" id="2_fog_scene"]
+[ext_resource type="Texture2D" path="res://assets/textures/ui/lock_icon.png" id="3_lock_tex"]
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_plot"]
+vertices = PackedVector2Array(-640, 0, 0, -320, 640, 0, 0, 320)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-640, 0, 0, -320, 640, 0, 0, 320)])
+
+[node name="ExpansionPlot" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_plot")
+enabled = false
+
+[node name="DimOverlay" type="Polygon2D" parent="."]
+color = Color(0, 0, 0, 0.4)
+polygon = PackedVector2Array(-640, 0, 0, -320, 640, 0, 0, 320)
+
+[node name="LockIcon" type="Sprite2D" parent="."]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("3_lock_tex")
+
+[node name="FogCloud" parent="." instance=ExtResource("2_fog_scene")]
+
+[node name="InteractionArea" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="InteractionArea"]
+polygon = PackedVector2Array(-640, 0, 0, -320, 640, 0, 0, 320)
+
+[connection signal="input_event" from="InteractionArea" to="." method="_on_interaction_area_input_event"]

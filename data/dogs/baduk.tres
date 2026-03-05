@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="DogResource" format=3 uid="uid://bgx2gjkshkire"]
+
+[ext_resource type="Texture2D" uid="uid://dn2myww78kdxi" path="res://assets/textures/dogs/baduk_idle.png" id="1_pth4e"]
+[ext_resource type="Script" uid="uid://cjdsmdbxc7jng" path="res://src/core/base/DogResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://urpmq8fih7ve" path="res://assets/textures/dogs/baduk_walk.png" id="3_lja3a"]
+
+[resource]
+script = ExtResource("1_script")
+dog_id = "baduk"
+dog_name = "바둑이"
+breed = "Jindo Mix"
+idle_spritesheet = ExtResource("1_pth4e")
+walk_spritesheet = ExtResource("3_lja3a")
+move_speed_multiplier = 0.8
