@@ -2,13 +2,16 @@
 
 [ext_resource type="Script" path="res://src/ui/main_hud/HarmonyLevelUI.gd" id="1_script"]
 [ext_resource type="Theme" path="res://assets/themes/main_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://src/ui/main_hud/ShopUI.tscn" id="3_shop_scene"]
+[ext_resource type="PackedScene" path="res://src/ui/main_hud/BagUI.tscn" id="4_bag_scene"]
 
 [node name="HarmonyLevelUI" type="Control"]
 layout_mode = 3
-anchors_preset = 10
+anchors_preset = 15
 anchor_right = 1.0
-offset_bottom = 80.0
+anchor_bottom = 1.0
 grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_script")
 
@@ -54,3 +57,44 @@ text = "🦴"
 [node name="TreatsLabel" type="Label" parent="TreatsContainer"]
 layout_mode = 2
 text = "0"
+
+[node name="MenuButtons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -150.0
+offset_right = -30.0
+offset_bottom = -30.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 15
+alignment = 2
+
+[node name="ShopButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+text = "왈왈 상점"
+
+[node name="BagButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+text = "내 가방"
+
+[node name="EditModeButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(120, 50)
+layout_mode = 2
+theme_type_variation = &"FlatButton"
+theme_override_colors/font_color = Color(1, 0.8, 0, 1)
+text = "배치 모드로"
+
+[node name="ShopUI" parent="." instance=ExtResource("3_shop_scene")]
+visible = false
+layout_mode = 1
+
+[node name="BagUI" parent="." instance=ExtResource("4_bag_scene")]
+visible = false
+layout_mode = 1

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingResource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/textures/buildings/pump.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://assets/textures/icons/pump_icon.png" id="3_icon"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "rattle_pond_pump"
+building_name = "달그락 퐁당 펌프"
+texture = ExtResource("2_tex")
+icon = ExtResource("3_icon")
+harmony_xp_gain = 50

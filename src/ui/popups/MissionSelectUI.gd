@@ -28,6 +28,8 @@ func _refresh_list() -> void:
 		btn.pressed.connect(_on_mission_btn_pressed.bind(mission))
 		mission_list.add_child(btn)
 
+	# 삭제: 가방 보관 버튼은 편집 모드 전용 BuildingEditUI 로 이동했습니다.
+
 func _on_mission_btn_pressed(mission: MissionResource) -> void:
 	mission_selected.emit(mission)
 	queue_free()

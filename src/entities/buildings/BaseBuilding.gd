@@ -33,6 +33,10 @@ func _apply_building_data() -> void:
 	available_missions = building_data.available_missions
 
 func _on_interacted() -> void:
+	if GameManager.is_edit_mode:
+		_show_edit_ui()
+		return
+
 	# 미션 상태에 따라 다른 처리
 	match mission_component.current_state:
 		MissionComponent.MissionState.IDLE:
@@ -42,6 +46,28 @@ func _on_interacted() -> void:
 		MissionComponent.MissionState.COMPLETED:
 			mission_component.claim_reward()
 
+func _show_edit_ui() -> void:
+	var ui_scene = load("res://src/ui/popups/BuildingEditUI.tscn")
+	var ui = ui_scene.instantiate()
+	add_child(ui)
+	ui.move_requested.connect(_on_move_requested)
+	ui.flip_requested.connect(_on_flip_requested)
+	ui.store_requested.connect(_on_store_requested)
+	print_debug("[BaseBuilding] Showing edit UI for: ", entity_name)
+
+func _on_move_requested() -> void:
+	if building_data:
+		# 1. 큐프리로 객체 소멸 전 인벤토리에 넣어줌 처리 (비용 0 으로 빌드 모드 시작을 위해)
+		GameManager.add_item(building_data.building_id, 1)
+		# 2. 이동 모드를 의미하는 "move" 소스와 함께 즉시 빌드 모드 진입
+		GameManager.start_build_mode.emit(building_data, 0, "move")
+		# 3. 기존 건물을 삭제하여 묶여있던 충돌, 표시 제거
+		queue_free()
+
+func _on_flip_requested() -> void:
+	sprite.flip_h = not sprite.flip_h
+	print_debug("[BaseBuilding] Flipped sprite for: ", entity_name)
+
 func _show_mission_select_ui() -> void:
 	var ui_scene = load("res://src/ui/popups/MissionSelectUI.tscn")
 	var ui = ui_scene.instantiate()
@@ -49,6 +75,12 @@ func _show_mission_select_ui() -> void:
 	ui.setup(available_missions)
 	ui.mission_selected.connect(_on_mission_selected)
 	print_debug("[BaseBuilding] Showing mission select UI for: ", entity_name)
+
+func _on_store_requested() -> void:
+	if building_data:
+		GameManager.add_item(building_data.building_id, 1)
+		print_debug("[BaseBuilding] Stored building in Bag: ", entity_name)
+		queue_free()
 
 func _on_mission_selected(mission: MissionResource) -> void:
 	# 마을의 강아지(바둑이)를 찾아서 호출

@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" path="res://src/levels/ExpansionPlot.tscn" id="8_plot_scene"]
 [ext_resource type="Resource" path="res://data/buildings/cabin.tres" id="9_cabin_res"]
 [ext_resource type="Resource" path="res://data/dogs/baduk.tres" id="10_baduk_res"]
+[ext_resource type="PackedScene" path="res://src/levels/build/BuildCursor.tscn" id="11_cursor_scene"]
+[ext_resource type="Script" path="res://src/levels/build/GridOverlay.gd" id="12_grid_script"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_1"]
 vertices = PackedVector2Array(-1280, 0, 0, -640, 1280, 0, 0, 640)
@@ -24,29 +26,35 @@ script = ExtResource("1_forest_script")
 navigation_polygon = SubResource("NavigationPolygon_1")
 
 [node name="GroundLayer" type="TileMap" parent="."]
-y_sort_enabled = true
+z_index = -10
 tile_set = ExtResource("2_tileset")
 format = 2
 layer_0/name = "Ground"
-layer_0/y_sort_enabled = true
 
-[node name="BaseDog_Baduk" parent="." instance=ExtResource("4_dog_scene")]
-position = Vector2(360, 640)
-dog_data = ExtResource("10_baduk_res")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
-[node name="HarmonyLevelUI" parent="CanvasLayer" instance=ExtResource("7_hud_scene")]
+[node name="GridOverlay" type="Node2D" parent="." node_paths=PackedStringArray("tilemap")]
+z_index = -5
+script = ExtResource("12_grid_script")
+tilemap = NodePath("../GroundLayer")
 
 [node name="Plots" type="Node2D" parent="."]
 y_sort_enabled = true
 
-[node name="ExpansionPlot" parent="Plots" instance=ExtResource("8_plot_scene")]
-position = Vector2(300, 300)
+[node name="ObjectManager" type="Node2D" parent="."]
+y_sort_enabled = true
 
-[node name="TestBuilding" parent="." instance=ExtResource("5_building_scene")]
+[node name="TestBuilding" parent="ObjectManager" instance=ExtResource("5_building_scene")]
 position = Vector2(300, 800)
 building_data = ExtResource("9_cabin_res")
+
+[node name="BaseDog_Baduk" parent="ObjectManager" instance=ExtResource("4_dog_scene")]
+position = Vector2(360, 640)
+dog_data = ExtResource("10_baduk_res")
+
+[node name="BuildCursor" parent="." instance=ExtResource("11_cursor_scene")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HarmonyLevelUI" parent="CanvasLayer" instance=ExtResource("7_hud_scene")]
 
 [node name="GameCamera" type="Camera2D" parent="."]
 script = ExtResource("3_camera_script")

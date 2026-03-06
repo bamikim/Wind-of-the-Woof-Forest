@@ -7,6 +7,7 @@ signal plot_unlocked
 
 @export var unlock_cost: int = 500
 @export var is_locked: bool = true
+var grid_pos: Vector2i = Vector2i.ZERO
 
 @onready var fog_cloud: Node2D = $FogCloud
 @onready var interaction_area: Area2D = $InteractionArea

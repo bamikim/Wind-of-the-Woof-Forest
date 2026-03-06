@@ -10,12 +10,11 @@ var _is_moving: bool = false
 var is_moving: bool:
 	get: return _is_moving
 
-var _navigation_agent: NavigationAgent2D
+var _navigation_agent: NavigationAgent2D = NavigationAgent2D.new()
 var velocity: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
-	# NavigationAgent2D 생성 및 설정
-	_navigation_agent = NavigationAgent2D.new()
+	# NavigationAgent2D 설정
 	_navigation_agent.path_desired_distance = 4.0
 	_navigation_agent.target_desired_distance = 4.0
 	
@@ -23,15 +22,21 @@ func _ready() -> void:
 	call_deferred("_add_agent_to_owner")
 
 func _add_agent_to_owner() -> void:
+	if not _navigation_agent: return
+	if _navigation_agent.get_parent(): return # 이미 부모가 있으면 중단
+		
 	if owner_entity:
 		owner_entity.add_child(_navigation_agent)
 		_target_position = owner_entity.global_position
 	else:
-		# 소유주가 아직 없으면 직접 추가 (에러 방지용)
 		add_child(_navigation_agent)
 
 func _on_owner_set() -> void:
+	if not _navigation_agent: return
+	
 	if _navigation_agent.get_parent():
+		if _navigation_agent.get_parent() == owner_entity:
+			return # 이미 올바른 부모 아래 있음
 		_navigation_agent.get_parent().remove_child(_navigation_agent)
 	
 	if owner_entity:

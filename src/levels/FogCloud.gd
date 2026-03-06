@@ -4,6 +4,7 @@ extends Node2D
 
 func disperse() -> void:
 	var tween = create_tween()
-	tween.tween_property(self , "modulate:a", 0.0, 2.0)
-	tween.tween_property(self , "scale", Vector2(1.5, 1.5), 2.0).set_trans(Tween.TRANS_SINE)
-	tween.finished.connect(queue_free)
+	tween.set_parallel(true)
+	tween.tween_property(self , "modulate:a", 0.0, 1.5)
+	tween.tween_property(self , "scale", Vector2(1.2, 1.2), 1.5).set_trans(Tween.TRANS_SINE)
+	tween.chain().finished.connect(queue_free)
