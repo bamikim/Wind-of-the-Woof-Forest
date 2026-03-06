@@ -47,8 +47,12 @@ func _on_interacted() -> void:
 			mission_component.claim_reward()
 
 func _show_edit_ui() -> void:
+	# 중복 팝업 방지: 이미 편집 UI가 표시 중이면 준단
+	if get_node_or_null("BuildingEditUI"):
+		return
 	var ui_scene = load("res://src/ui/popups/BuildingEditUI.tscn")
 	var ui = ui_scene.instantiate()
+	ui.name = "BuildingEditUI"
 	add_child(ui)
 	ui.move_requested.connect(_on_move_requested)
 	ui.flip_requested.connect(_on_flip_requested)

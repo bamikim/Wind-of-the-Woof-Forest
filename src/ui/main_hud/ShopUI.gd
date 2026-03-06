@@ -69,5 +69,25 @@ func _on_buy_pressed(res: BuildingResource, cost: int) -> void:
 		hide()
 		GameManager.start_build_mode.emit(res, cost, "shop")
 	else:
-		print_debug("Not enough treats!")
-		# 돈 부족 피드백 연출 (옵션)
+		print_debug("[ShopUI] Not enough treats! Need: ", cost, " Have: ", GameManager.dog_treats)
+		_show_insufficient_funds_feedback()
+
+func _show_insufficient_funds_feedback() -> void:
+	## 개꿘이 부족 시 패널을 빨갓게 바꾸고 흔들림 연출을 연주합니다.
+	var panel = get_node_or_null("Panel")
+	if not panel: return
+	
+	var original_pos = panel.position
+	var original_mod = panel.modulate
+	
+	var tween = create_tween()
+	# 빨강 플래시
+	tween.tween_property(panel, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.1)
+	tween.tween_property(panel, "modulate", original_mod, 0.15)
+	
+	# 좌우 흔들림 (Shake)
+	var shake_dist = 6.0
+	tween.tween_property(panel, "position", original_pos + Vector2(shake_dist, 0), 0.05)
+	tween.tween_property(panel, "position", original_pos + Vector2(-shake_dist, 0), 0.05)
+	tween.tween_property(panel, "position", original_pos + Vector2(shake_dist * 0.5, 0), 0.05)
+	tween.tween_property(panel, "position", original_pos, 0.05)

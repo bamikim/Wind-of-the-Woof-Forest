@@ -85,3 +85,17 @@ func _check_level_up() -> void:
 
 func _ready() -> void:
 	print_debug("[GameManager] Managed systems initialized.")
+	# 게임 시작 시 저장 블러오기 (다음 프레임에 실행하여 씸 이받기 보장)
+	call_deferred("_autoload_save")
+
+func _autoload_save() -> void:
+	if SaveManager.has_save():
+		SaveManager.load_game()
+	else:
+		print_debug("[GameManager] Fresh start - no save file.")
+
+func _notification(what: int) -> void:
+	# 앱이 종료될 때 자동 저장
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_EXIT_TREE:
+		SaveManager.save_game()
+		print_debug("[GameManager] Auto-saved on exit.")
