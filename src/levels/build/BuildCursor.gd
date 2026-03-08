@@ -19,6 +19,7 @@ var current_grid_pos: Vector2i = Vector2i.ZERO
 var current_cost: int = 0
 var current_source: String = ""
 var is_dragging: bool = false
+var _anim_timer: float = 0.0
 
 # 지오메트리 상수 (아이소메트릭 그리드 256x128 기준)
 const TILE_WIDTH = 256
@@ -38,6 +39,9 @@ func activate(res: BuildingResource, cost: int, source: String) -> void:
 	current_cost = cost
 	current_source = source
 	ghost_sprite.texture = res.texture
+	ghost_sprite.hframes = res.hframes
+	ghost_sprite.vframes = res.vframes
+	ghost_sprite.frame = 0
 	ghost_sprite.modulate = Color(1, 1, 1, 0.5) # 50% 반투명
 	is_active = true
 	is_dragging = false
@@ -87,8 +91,15 @@ func _stop_drag() -> void:
 		_check_buildable()
 		gizmo_ui.show()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not is_active: return
+	
+	if current_building_res and (current_building_res.hframes * current_building_res.vframes) > 1:
+		_anim_timer += delta
+		var frame_duration = 1.0 / current_building_res.animation_fps
+		if _anim_timer >= frame_duration:
+			_anim_timer -= frame_duration
+			ghost_sprite.frame = (ghost_sprite.frame + 1) % (current_building_res.hframes * current_building_res.vframes)
 	
 	if is_dragging:
 		# 마우스를 드래그할 때만 따라다님
@@ -110,17 +121,32 @@ func _update_position(mouse_pos: Vector2) -> void:
 		# 그리드 중앙 위치 계산
 		var snap_pos = tilemap.map_to_local(grid_pos)
 		global_position = snap_pos
+		queue_redraw() # 위치가 바뀔 때마다 테두리 다시 그리기
 
 func _check_buildable() -> void:
-	# 바닥 타일이 없는 경우는 _update_position에서 처리함. 추가로 겹치는 영역 체크
-	var overlapping = area_2d.get_overlapping_areas()
-	
-	for area in overlapping:
-		# 같은 건물의 InteractionArea와 겹치는지 확인 (여기서는 Area2D의 소속 여부로 판단)
-		# 확장을 위해 일단 겹치면 불가 처리 (추후 태그나 그룹 설정 필요)
-		if area.name == "InteractionArea" and area.get_parent() != self:
+	# 바닥 타일이 없는 경우는 _update_position에서 처리함. 
+	# 만약 바닥이 없어서 이미 can_build == false라면 추가 검사 생략
+	if not can_build:
+		ghost_sprite.modulate = Color(1.0, 0.5, 0.5, 0.7) # 연한 붉은색
+		confirm_btn.disabled = true
+		queue_redraw()
+		return
+
+	# 추가로 겹치는 영역 체크 (건물은 주로 StaticBody2D를 사용)
+	var overlapping_bodies = area_2d.get_overlapping_bodies()
+	for body in overlapping_bodies:
+		var parent = body.get_parent()
+		if parent is BaseBuilding and parent != self:
 			can_build = false
 			break
+			
+	# 레거시 InteractionArea 지원 병행 (확장성 대비)
+	if can_build:
+		var overlapping_areas = area_2d.get_overlapping_areas()
+		for area in overlapping_areas:
+			if area.name == "InteractionArea" and area.get_parent() != self:
+				can_build = false
+				break
 			
 	if can_build:
 		ghost_sprite.modulate = Color(0.5, 1.0, 0.5, 0.7) # 연한 녹색
@@ -128,6 +154,8 @@ func _check_buildable() -> void:
 	else:
 		ghost_sprite.modulate = Color(1.0, 0.5, 0.5, 0.7) # 연한 붉은색
 		confirm_btn.disabled = true
+		
+	queue_redraw() # 색상 변경 시 테두리 색도 다시 그리기
 
 func _on_confirm() -> void:
 	if can_build and current_building_res:
@@ -137,3 +165,24 @@ func _on_confirm() -> void:
 func _on_cancel() -> void:
 	build_canceled.emit(current_source)
 	deactivate()
+
+func _draw() -> void:
+	if not is_active: return
+	
+	# 아이소메트릭 그리드 (256x128) 중앙 기준 마름모 테두리 좌표
+	var points = PackedVector2Array([
+		Vector2(0, -64),
+		Vector2(128, 0),
+		Vector2(0, 64),
+		Vector2(-128, 0),
+		Vector2(0, -64) # 도형 닫기
+	])
+	
+	# can_build 여부에 따라 테두리 색상 결정
+	var color = Color(0.3, 1.0, 0.3, 0.8) if can_build else Color(1.0, 0.3, 0.3, 0.8)
+	var width = 4.0
+	
+	# 투명한 채우기
+	draw_colored_polygon(points, Color(color.r, color.g, color.b, 0.2))
+	# 외곽선
+	draw_polyline(points, color, width, true)

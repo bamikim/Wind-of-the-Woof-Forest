@@ -10,6 +10,7 @@ script = ExtResource("1_building_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 y_sort_enabled = true
+offset = Vector2(0, -50)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 input_pickable = true

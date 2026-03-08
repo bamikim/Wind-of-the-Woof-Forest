@@ -46,7 +46,7 @@ func _create_item_slot(res: BuildingResource, amount: int) -> Control:
 	vbox.custom_minimum_size = Vector2(100, 120)
 	
 	var icon = TextureRect.new()
-	icon.texture = res.icon if res.icon else res.texture
+	icon.texture = _get_display_texture(res)
 	icon.custom_minimum_size = Vector2(80, 80)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -79,3 +79,18 @@ func _on_inventory_changed(_item_id: String, _amount: int) -> void:
 func open_bag() -> void:
 	update_bag()
 	show()
+
+func _get_display_texture(res: BuildingResource) -> Texture2D:
+	var tex = res.texture
+	if not tex:
+		return res.icon
+		
+	if res.hframes * res.vframes > 1:
+		var atlas = AtlasTexture.new()
+		atlas.atlas = tex
+		var frame_w = tex.get_width() / float(res.hframes)
+		var frame_h = tex.get_height() / float(res.vframes)
+		atlas.region = Rect2(0, 0, frame_w, frame_h)
+		return atlas
+		
+	return tex

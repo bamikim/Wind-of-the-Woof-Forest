@@ -35,7 +35,7 @@ func _create_item_row(res: BuildingResource, cost: int) -> Control:
 	var hbox = HBoxContainer.new()
 	
 	var icon = TextureRect.new()
-	icon.texture = res.icon if res.icon else res.texture
+	icon.texture = _get_display_texture(res)
 	icon.custom_minimum_size = Vector2(64, 64)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -91,3 +91,19 @@ func _show_insufficient_funds_feedback() -> void:
 	tween.tween_property(panel, "position", original_pos + Vector2(-shake_dist, 0), 0.05)
 	tween.tween_property(panel, "position", original_pos + Vector2(shake_dist * 0.5, 0), 0.05)
 	tween.tween_property(panel, "position", original_pos, 0.05)
+
+func _get_display_texture(res: BuildingResource) -> Texture2D:
+	# 사용자 요청: 아이콘과 실제 배치 이미지를 동일하게 하되, 스프라이트 시트면 1프레임만 오려서 표시
+	var tex = res.texture
+	if not tex:
+		return res.icon
+		
+	if res.hframes * res.vframes > 1:
+		var atlas = AtlasTexture.new()
+		atlas.atlas = tex
+		var frame_w = tex.get_width() / float(res.hframes)
+		var frame_h = tex.get_height() / float(res.vframes)
+		atlas.region = Rect2(0, 0, frame_w, frame_h)
+		return atlas
+		
+	return tex

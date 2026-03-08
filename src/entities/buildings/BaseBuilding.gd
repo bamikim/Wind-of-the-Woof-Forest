@@ -14,6 +14,7 @@ extends BaseEntity
 			_apply_building_data()
 
 var available_missions: Array[MissionResource] = []
+var _anim_timer: float = 0.0
 
 func _ready() -> void:
 	super._ready()
@@ -30,7 +31,18 @@ func _apply_building_data() -> void:
 	entity_name = building_data.building_name
 	if building_data.texture:
 		sprite.texture = building_data.texture
+		sprite.hframes = building_data.hframes
+		sprite.vframes = building_data.vframes
+		sprite.frame = 0
 	available_missions = building_data.available_missions
+
+func _process(delta: float) -> void:
+	if building_data and (building_data.hframes * building_data.vframes) > 1:
+		_anim_timer += delta
+		var frame_duration = 1.0 / building_data.animation_fps
+		if _anim_timer >= frame_duration:
+			_anim_timer -= frame_duration
+			sprite.frame = (sprite.frame + 1) % (building_data.hframes * building_data.vframes)
 
 func _on_interacted() -> void:
 	if GameManager.is_edit_mode:
