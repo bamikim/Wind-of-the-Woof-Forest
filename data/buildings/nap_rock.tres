@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://dss3br357s1wr"]
+
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_06qha"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://w6fnxgyyqrqe" path="res://assets/textures/buildings/nap_rock.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "nap_rock"
+building_name = "낮잠용 뜨끈뜨끈 바위"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -30)

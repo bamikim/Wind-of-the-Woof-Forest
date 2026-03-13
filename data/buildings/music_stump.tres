@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://dkl4y225deo7p"]
+
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_vtihb"]
+[ext_resource type="Texture2D" uid="uid://dyv2kws3fc1av" path="res://assets/textures/buildings/music_stump.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "music_stump"
+building_name = "소리 나는 오르골 그루터기"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -40)

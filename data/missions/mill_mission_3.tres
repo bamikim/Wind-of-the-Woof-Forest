@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MissionResource" load_steps=2 format=3 uid="uid://mill_miss_3_uid"]
+
+[ext_resource type="Script" path="res://src/core/base/MissionResource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+mission_id = "mill_mission_3"
+mission_name = "방앗간 그늘에서 꾸벅꾸벅"
+duration_seconds = 14400.0
+reward_amount = 50
+reward_xp = 150
+extra_reward_id = "cookie"
+extra_reward_chance = 0.3

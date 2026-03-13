@@ -17,8 +17,12 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+InventoryManager="*res://src/core/autoload/InventoryManager.gd"
+UIManager="*res://src/core/autoload/UIManager.gd"
+BuildManager="*res://src/core/autoload/BuildManager.gd"
 GameManager="*res://src/core/autoload/GameManager.gd"
 SaveManager="*res://src/core/autoload/SaveManager.gd"
+ExplorationManager="*res://src/core/autoload/ExplorationManager.gd"
 SoundManager="*res://src/core/autoload/SoundManager.gd"
 
 [display]

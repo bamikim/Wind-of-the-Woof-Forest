@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionResource" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/base/MissionResource.gd" id="1_1a"]
+
+[resource]
+script = ExtResource("1_1a")
+mission_id = "explore_stone"
+mission_name = "바위 언덕 탐험"
+duration_seconds = 300.0
+reward_amount = 0
+reward_xp = 20
+extra_reward_id = ""
+extra_reward_chance = 0.0
+reward_material_type = "stone"
+reward_material_amount = 1

@@ -8,3 +8,5 @@ dog_id = "bori"
 dog_name = "보리"
 breed = "진돗개"
 move_speed_multiplier = 1.1
+job = 1
+personality = 1

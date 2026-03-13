@@ -33,6 +33,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				return
 			
 			_is_panning = event.pressed
+			# 마우스 버튼을 뗐을 때 항상 팬 해제 (팝업 등으로 인해 release 이벤트가 누락되는 경우 대비)
+			if not event.pressed:
+				_is_panning = false
 			return
 
 	if event is InputEventMouseMotion and _is_panning:
@@ -45,6 +48,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_touches[event.index] = event.position
 		else:
 			_touches.erase(event.index)
+			# 터치를 떼면 항상 팬 상태를 해제 (팝업이 중간에 뜨면서 터치 해제를 못 받는 경우 대비)
+			_is_panning = false
 			
 		if build_active:
 			return

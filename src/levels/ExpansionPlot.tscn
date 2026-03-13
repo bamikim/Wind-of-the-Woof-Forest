@@ -16,6 +16,8 @@ script = ExtResource("1_script")
 navigation_polygon = SubResource("NavigationPolygon_plot")
 enabled = false
 
+[node name="FogCloud" parent="." instance=ExtResource("2_fog_scene")]
+
 [node name="DimOverlay" type="Polygon2D" parent="."]
 color = Color(0, 0, 0, 0.4)
 polygon = PackedVector2Array(-1280, 0, 0, -640, 1280, 0, 0, 640)
@@ -23,8 +25,7 @@ polygon = PackedVector2Array(-1280, 0, 0, -640, 1280, 0, 0, 640)
 [node name="LockIcon" type="Sprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_lock_tex")
-
-[node name="FogCloud" parent="." instance=ExtResource("2_fog_scene")]
+z_index = 5
 
 [node name="InteractionArea" type="Area2D" parent="."]
 

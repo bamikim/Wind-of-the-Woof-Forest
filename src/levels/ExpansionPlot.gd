@@ -32,6 +32,7 @@ func unlock_immediately() -> void:
 	if dim_overlay: dim_overlay.hide()
 	if lock_icon: lock_icon.hide()
 	interaction_area.input_pickable = false
+	interaction_area.monitoring = false
 
 func request_unlock() -> void:
 	if not is_locked: return
@@ -58,9 +59,26 @@ func _perform_unlock() -> void:
 	if lock_icon: lock_icon.hide()
 		
 	interaction_area.input_pickable = false
+	interaction_area.monitoring = false
 	plot_unlocked.emit()
 	print_debug("[ExpansionPlot] Plot unlocked!")
 
 func _on_interaction_area_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		request_unlock()
+		if is_locked:
+			_show_confirm_dialog()
+
+func _show_confirm_dialog() -> void:
+	if get_node_or_null("UnlockDialog"): return
+	
+	var dialog = ConfirmationDialog.new()
+	dialog.name = "UnlockDialog"
+	dialog.title = "영토 확장"
+	dialog.dialog_text = "개껌 %d개가 소모됩니다.\n영토를 확장하시겠습니까?" % unlock_cost
+	dialog.ok_button_text = "확장하기"
+	dialog.cancel_button_text = "취소"
+	add_child(dialog)
+	dialog.confirmed.connect(request_unlock)
+	dialog.canceled.connect(dialog.queue_free)
+	dialog.close_requested.connect(dialog.queue_free)
+	dialog.popup_centered()

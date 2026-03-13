@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://cd8lgue745utb"]
+
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_ogj47"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://daia8f7lv7dka" path="res://assets/textures/buildings/snack_cart.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "snack_cart"
+building_name = "덜컹거리는 간식 수레"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -35)

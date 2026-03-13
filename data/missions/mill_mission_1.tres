@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MissionResource" load_steps=2 format=3 uid="uid://mill_miss_1_uid"]
+
+[ext_resource type="Script" path="res://src/core/base/MissionResource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+mission_id = "mill_mission_1"
+mission_name = "달그락 뼈다귀 가루 빻기"
+duration_seconds = 600.0
+reward_amount = 5
+reward_xp = 5
+extra_reward_id = ""
+extra_reward_chance = 0.0

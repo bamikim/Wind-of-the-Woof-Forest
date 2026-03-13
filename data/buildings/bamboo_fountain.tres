@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://cslt33teg0112"]
+
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_5nlsb"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://3qk8iwjswa7" path="res://assets/textures/buildings/bamboo_fountain.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "bamboo_fountain"
+building_name = "마음을 씻는 대나무 물받이"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -60)

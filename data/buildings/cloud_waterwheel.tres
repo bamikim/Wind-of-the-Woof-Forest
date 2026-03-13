@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://cnw63d017i6un"]
+
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_ymgnt"]
+[ext_resource type="Texture2D" uid="uid://benuketqywq6v" path="res://assets/textures/buildings/cloud_waterwheel.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "cloud_waterwheel"
+building_name = "구름 제작소 물레방아"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+occupied_tiles = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])

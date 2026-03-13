@@ -42,9 +42,29 @@ func activate(res: BuildingResource, cost: int, source: String) -> void:
 	ghost_sprite.hframes = res.hframes
 	ghost_sprite.vframes = res.vframes
 	ghost_sprite.frame = 0
+	ghost_sprite.offset = res.visual_offset
 	ghost_sprite.modulate = Color(1, 1, 1, 0.5) # 50% 반투명
+	print_debug("[BuildCursor] Ghost offset set to: ", res.visual_offset, " for ", res.building_name)
+	
+	# 다중 타일 점유 범위에 맞추어 충돌 영역 재생성
+	for child in area_2d.get_children():
+		if child is CollisionPolygon2D:
+			child.queue_free()
+			
+	for tile_pos in current_building_res.occupied_tiles:
+		var poly = CollisionPolygon2D.new()
+		var local_offset = Vector2((tile_pos.x - tile_pos.y) * 128.0, (tile_pos.x + tile_pos.y) * 64.0)
+		poly.polygon = PackedVector2Array([
+			Vector2(-128, 0) + local_offset,
+			Vector2(0, -64) + local_offset,
+			Vector2(128, 0) + local_offset,
+			Vector2(0, 64) + local_offset
+		])
+		area_2d.add_child(poly)
+	
 	is_active = true
 	is_dragging = false
+	BuildManager.is_active = true
 	
 	_update_position(get_global_mouse_position())
 	_check_buildable()
@@ -61,6 +81,7 @@ func deactivate() -> void:
 	is_active = false
 	is_dragging = false
 	current_building_res = null
+	BuildManager.is_active = false
 	hide()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -104,7 +125,10 @@ func _process(delta: float) -> void:
 	if is_dragging:
 		# 마우스를 드래그할 때만 따라다님
 		_update_position(get_global_mouse_position())
-		_check_buildable()
+		
+	# 처음 배치 모드가 켜진 직후에는 물리 엔진의 충돌 갱신이 한 프레임 지연될 수 있으므로,
+	# 매 틱마다 겹침 여부를 갱신하여 상점에서 사자마자 바로 겹쳐 짓는 버그를 차단합니다.
+	_check_buildable()
 
 func _update_position(mouse_pos: Vector2) -> void:
 	# 부모(StartingForest)의 좌표계 기반 타일 스냅핑
@@ -113,9 +137,14 @@ func _update_position(mouse_pos: Vector2) -> void:
 		# 로컬을 그리드로
 		var grid_pos = tilemap.local_to_map(mouse_pos)
 		
-		# 잔디 타일(0)이 깔려있는지 확인
-		var cell_source = tilemap.get_cell_source_id(0, grid_pos)
-		can_build = (cell_source != -1) # 바닥이 없으면 설치 불가
+		# 잔디 타일(0)이 점유하는 모든 타일 영역에 위치해 있는지 검사
+		can_build = true
+		for tile_pos in current_building_res.occupied_tiles:
+			var check_pos = grid_pos + tile_pos
+			var cell_source = tilemap.get_cell_source_id(0, check_pos)
+			if cell_source == -1: # 바닥이 없으면 설치 불가
+				can_build = false
+				break
 		
 		current_grid_pos = grid_pos
 		# 그리드 중앙 위치 계산
@@ -133,13 +162,37 @@ func _check_buildable() -> void:
 		return
 
 	# 추가로 겹치는 영역 체크 (건물은 주로 StaticBody2D를 사용)
-	var overlapping_bodies = area_2d.get_overlapping_bodies()
-	for body in overlapping_bodies:
-		var parent = body.get_parent()
-		if parent is BaseBuilding and parent != self:
-			can_build = false
-			break
+	# 물리 엔진 틱 지연이나 형태적 한계를 보완하기 위해 
+	# 실시간으로 생성되어 있는 기존 건물들의 occupied_tiles 배열과 직접 좌표 비교를 수행
+	if can_build:
+		# 현재 설치하려는 건물이 덮게 될 절대 그리드 좌표 목록
+		var target_tiles = []
+		for t_pos in current_building_res.occupied_tiles:
+			target_tiles.append(current_grid_pos + t_pos)
+		
+		var all_buildings = get_tree().get_nodes_in_group("buildings")
+		for building in all_buildings:
+			if building == self or not building.building_data or building.is_queued_for_deletion():
+				continue
+				
+			var b_grid_pos = Vector2i.ZERO
+			if "grid_pos" in building:
+				b_grid_pos = building.grid_pos
+			else:
+				b_grid_pos = Vector2i(
+					int(round(get_parent().get_node("GroundLayer").local_to_map(building.global_position).x)),
+					int(round(get_parent().get_node("GroundLayer").local_to_map(building.global_position).y))
+				)
 			
+			for t_pos in building.building_data.occupied_tiles:
+				var occupied_absolute_pos = b_grid_pos + t_pos
+				if target_tiles.has(occupied_absolute_pos):
+					can_build = false
+					break
+			
+			if not can_build:
+				break
+				
 	# 레거시 InteractionArea 지원 병행 (확장성 대비)
 	if can_build:
 		var overlapping_areas = area_2d.get_overlapping_areas()
@@ -167,22 +220,22 @@ func _on_cancel() -> void:
 	deactivate()
 
 func _draw() -> void:
-	if not is_active: return
+	if not is_active or not current_building_res: return
 	
-	# 아이소메트릭 그리드 (256x128) 중앙 기준 마름모 테두리 좌표
-	var points = PackedVector2Array([
-		Vector2(0, -64),
-		Vector2(128, 0),
-		Vector2(0, 64),
-		Vector2(-128, 0),
-		Vector2(0, -64) # 도형 닫기
-	])
-	
-	# can_build 여부에 따라 테두리 색상 결정
 	var color = Color(0.3, 1.0, 0.3, 0.8) if can_build else Color(1.0, 0.3, 0.3, 0.8)
 	var width = 4.0
 	
-	# 투명한 채우기
-	draw_colored_polygon(points, Color(color.r, color.g, color.b, 0.2))
-	# 외곽선
-	draw_polyline(points, color, width, true)
+	for tile_pos in current_building_res.occupied_tiles:
+		var local_offset = Vector2((tile_pos.x - tile_pos.y) * 128.0, (tile_pos.x + tile_pos.y) * 64.0)
+		var points = PackedVector2Array([
+			Vector2(0, -64) + local_offset,
+			Vector2(128, 0) + local_offset,
+			Vector2(0, 64) + local_offset,
+			Vector2(-128, 0) + local_offset,
+			Vector2(0, -64) + local_offset # 도형 닫기
+		])
+		
+		# 투명한 채우기
+		draw_colored_polygon(points, Color(color.r, color.g, color.b, 0.2))
+		# 외곽선
+		draw_polyline(points, color, width, true)

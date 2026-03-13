@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://de3pqdp4p7keu"]
+
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_6agjh"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b570vfc477iex" path="res://assets/textures/buildings/bee_planter.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "bee_planter"
+building_name = "꿀벌이 쉬어가는 화분"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -90)

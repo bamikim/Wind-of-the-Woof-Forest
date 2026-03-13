@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="BuildingResource" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://5m8x7uvm0rs3"]
 
-[ext_resource type="Script" path="res://src/core/base/BuildingResource.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/textures/buildings/pump.png" id="2_tex"]
-[ext_resource type="Texture2D" path="res://assets/textures/icons/pump_icon.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_2la3r"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://3ntwpb3j67qr" path="res://assets/textures/buildings/pump.png" id="2_tex"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,7 +10,5 @@ building_id = "rattle_pond_pump"
 building_name = "달그락 퐁당 펌프"
 texture = ExtResource("2_tex")
 hframes = 8
-vframes = 1
-animation_fps = 8.0
-icon = ExtResource("3_icon")
-harmony_xp_gain = 50
+animation_fps = 6.0
+visual_offset = Vector2(0, -90)

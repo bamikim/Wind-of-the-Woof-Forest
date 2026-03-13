@@ -3,25 +3,45 @@ extends Node
 ## 게임 전역 상태(재화, 레벨 등)를 관리하는 싱글톤 클래스.
 
 signal currency_changed(new_amount: int)
+signal cookies_changed(new_amount: int)
 signal level_changed(new_level: int)
 signal xp_changed(current_xp: int, max_xp: int)
-signal inventory_changed(item_id: String, amount: int)
-signal start_build_mode(res: Resource, cost: int, source: String)
-signal open_shop_requested
-signal edit_mode_toggled(is_active: bool)
+signal materials_changed(material_type: String, new_amount: int)
 
-var is_edit_mode: bool = false:
-	set(value):
-		is_edit_mode = value
-		edit_mode_toggled.emit(is_edit_mode)
+@warning_ignore("unused_signal")
+signal game_loaded
 
-var inventory: Dictionary = {}
-var purchased_items: Array[String] = []
 
-var dog_treats: int = 1500:
+var dog_treats: int = 10000:
 	set(value):
 		dog_treats = value
 		currency_changed.emit(dog_treats)
+
+var cookies: int = 0:
+	set(value):
+		cookies = value
+		cookies_changed.emit(cookies)
+
+# 탐험으로 얻는 특수 재료들 (wood, stone, dew 등)
+var materials: Dictionary = {
+	"wood": 0,
+	"stone": 0,
+	"dew": 0
+}
+
+func add_material(type: String, amount: int) -> void:
+	if materials.has(type):
+		materials[type] += amount
+		materials_changed.emit(type, materials[type])
+		print_debug("[GameManager] Material Added: %s x%d (Total: %d)" % [type, amount, materials[type]])
+
+func remove_material(type: String, amount: int) -> bool:
+	if materials.has(type) and materials[type] >= amount:
+		materials[type] -= amount
+		materials_changed.emit(type, materials[type])
+		return true
+	print_debug("[GameManager] Not enough material: ", type)
+	return false
 
 var forest_harmony_level: int = 1:
 	set(value):
@@ -42,31 +62,6 @@ func get_max_xp() -> int:
 	# 레벨별 필요 경험치 공식 (예: 레벨 * 100)
 	return forest_harmony_level * 100
 
-func add_item(item_id: String, amount: int = 1) -> void:
-	if not inventory.has(item_id):
-		inventory[item_id] = 0
-	inventory[item_id] += amount
-	inventory_changed.emit(item_id, inventory[item_id])
-	print_debug("[GameManager] Item Added: ", item_id, " Amount: ", amount, " Total: ", inventory[item_id])
-
-func remove_item(item_id: String, amount: int = 1) -> bool:
-	if has_item(item_id) and inventory[item_id] >= amount:
-		inventory[item_id] -= amount
-		inventory_changed.emit(item_id, inventory[item_id])
-		print_debug("[GameManager] Item Removed: ", item_id, " Amount: ", amount, " Left: ", inventory[item_id])
-		return true
-	return false
-
-func has_item(item_id: String) -> bool:
-	return inventory.has(item_id) and inventory[item_id] > 0
-
-func mark_as_purchased(item_id: String) -> void:
-	if not purchased_items.has(item_id):
-		purchased_items.append(item_id)
-		print_debug("[GameManager] Marked as purchased: ", item_id)
-
-func has_purchased(item_id: String) -> bool:
-	return purchased_items.has(item_id)
 
 func deduct_treats(cost: int) -> bool:
 	if dog_treats >= cost:
@@ -93,6 +88,8 @@ func _autoload_save() -> void:
 		SaveManager.load_game()
 	else:
 		print_debug("[GameManager] Fresh start - no save file.")
+		# 저장 파일이 없을 때 최초 실행용 game_loaded 호출
+		game_loaded.emit()
 
 func _notification(what: int) -> void:
 	# 앱이 종료될 때 자동 저장

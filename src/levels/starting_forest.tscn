@@ -1,61 +1,54 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://dxpc52m8r5j01"]
 
-[ext_resource type="Script" path="res://src/levels/starting_forest.gd" id="1_forest_script"]
-[ext_resource type="TileSet" path="res://assets/tilesets/base_tileset.tres" id="2_tileset"]
-[ext_resource type="Script" path="res://src/core/GameCamera.gd" id="3_camera_script"]
+[ext_resource type="Script" uid="uid://cggd6dovfr23e" path="res://src/levels/starting_forest.gd" id="1_forest_script"]
+[ext_resource type="TileSet" uid="uid://becy60yc61c13" path="res://assets/tilesets/base_tileset.tres" id="2_tileset"]
+[ext_resource type="Script" uid="uid://c0ygbax4kt4gb" path="res://src/core/GameCamera.gd" id="3_camera_script"]
 [ext_resource type="PackedScene" path="res://src/entities/dogs/BaseDog.tscn" id="4_dog_scene"]
 [ext_resource type="PackedScene" path="res://src/entities/buildings/BaseBuilding.tscn" id="5_building_scene"]
-[ext_resource type="Resource" path="res://data/test_mission.tres" id="6_mission"]
 [ext_resource type="PackedScene" path="res://src/ui/main_hud/HarmonyLevelUI.tscn" id="7_hud_scene"]
-[ext_resource type="PackedScene" path="res://src/levels/ExpansionPlot.tscn" id="8_plot_scene"]
-[ext_resource type="Resource" path="res://data/buildings/cabin.tres" id="9_cabin_res"]
-[ext_resource type="Resource" path="res://data/dogs/baduk.tres" id="10_baduk_res"]
+[ext_resource type="Resource" uid="uid://bgx2gjkshkire" path="res://data/dogs/baduk.tres" id="10_baduk_res"]
 [ext_resource type="PackedScene" path="res://src/levels/build/BuildCursor.tscn" id="11_cursor_scene"]
-[ext_resource type="Script" path="res://src/levels/build/GridOverlay.gd" id="12_grid_script"]
+[ext_resource type="Script" uid="uid://cm212njqvilpa" path="res://src/levels/build/GridOverlay.gd" id="12_grid_script"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_1"]
 vertices = PackedVector2Array(-1280, 0, 0, -640, 1280, 0, 0, 640)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
 outlines = Array[PackedVector2Array]([PackedVector2Array(-1280, 0, 0, -640, 1280, 0, 0, 640)])
 
-[node name="StartingForest" type="Node2D"]
+[node name="StartingForest" type="Node2D" unique_id=1694170092]
 y_sort_enabled = true
 script = ExtResource("1_forest_script")
 
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=1155131146]
 navigation_polygon = SubResource("NavigationPolygon_1")
 
-[node name="GroundLayer" type="TileMap" parent="."]
+[node name="GroundLayer" type="TileMap" parent="." unique_id=205438416]
 z_index = -10
 tile_set = ExtResource("2_tileset")
 format = 2
 layer_0/name = "Ground"
 
-[node name="GridOverlay" type="Node2D" parent="." node_paths=PackedStringArray("tilemap")]
+[node name="GridOverlay" type="Node2D" parent="." unique_id=2039007317 node_paths=PackedStringArray("tilemap")]
 z_index = -5
 script = ExtResource("12_grid_script")
 tilemap = NodePath("../GroundLayer")
 
-[node name="Plots" type="Node2D" parent="."]
+[node name="Plots" type="Node2D" parent="." unique_id=1706979414]
 y_sort_enabled = true
 
-[node name="ObjectManager" type="Node2D" parent="."]
+[node name="ObjectManager" type="Node2D" parent="." unique_id=706722756]
 y_sort_enabled = true
 
-[node name="TestBuilding" parent="ObjectManager" instance=ExtResource("5_building_scene")]
-position = Vector2(300, 800)
-building_data = ExtResource("9_cabin_res")
-
-[node name="BaseDog_Baduk" parent="ObjectManager" instance=ExtResource("4_dog_scene")]
+[node name="BaseDog_Baduk" parent="ObjectManager" unique_id=444417386 instance=ExtResource("4_dog_scene")]
 position = Vector2(360, 640)
 dog_data = ExtResource("10_baduk_res")
 
-[node name="BuildCursor" parent="." instance=ExtResource("11_cursor_scene")]
+[node name="BuildCursor" parent="." unique_id=440627328 instance=ExtResource("11_cursor_scene")]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1502616103]
 
-[node name="HarmonyLevelUI" parent="CanvasLayer" instance=ExtResource("7_hud_scene")]
+[node name="HarmonyLevelUI" parent="CanvasLayer" unique_id=578547714 instance=ExtResource("7_hud_scene")]
 
-[node name="GameCamera" type="Camera2D" parent="."]
-script = ExtResource("3_camera_script")
+[node name="GameCamera" type="Camera2D" parent="." unique_id=1348913271]
 position = Vector2(360, 640)
+script = ExtResource("3_camera_script")

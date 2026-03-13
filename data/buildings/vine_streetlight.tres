@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://dygj1wxrq0vce"]
+
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_ylhec"]
+[ext_resource type="Texture2D" uid="uid://bgn6n0f3i5x4r" path="res://assets/textures/buildings/vine_streetlight.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "vine_streetlight"
+building_name = "노을빛 넝쿨 가로등"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -100)

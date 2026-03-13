@@ -8,7 +8,18 @@ extends Control
 var shop_items: Array = [
 	{"path": "res://data/buildings/mill.tres", "cost": 200},
 	{"path": "res://data/buildings/pump.tres", "cost": 150},
-	{"path": "res://data/buildings/postbox.tres", "cost": 100}
+	{"path": "res://data/buildings/postbox.tres", "cost": 100},
+	{"path": "res://data/buildings/bamboo_fountain.tres", "cost": 120},
+	{"path": "res://data/buildings/biscuit_rack.tres", "cost": 180},
+	{"path": "res://data/buildings/glass_windchime.tres", "cost": 250},
+	{"path": "res://data/buildings/cloud_observatory.tres", "cost": 400},
+	{"path": "res://data/buildings/bee_planter.tres", "cost": 80},
+	{"path": "res://data/buildings/music_stump.tres", "cost": 220},
+	{"path": "res://data/buildings/vine_streetlight.tres", "cost": 100},
+	{"path": "res://data/buildings/snack_cart.tres", "cost": 150},
+	{"path": "res://data/buildings/cloud_waterwheel.tres", "cost": 300},
+	{"path": "res://data/buildings/balloon_station.tres", "cost": 500},
+	{"path": "res://data/buildings/nap_rock.tres", "cost": 50}
 ]
 
 func _ready() -> void:
@@ -27,7 +38,7 @@ func _populate_shop() -> void:
 		
 	for item_data in shop_items:
 		var res: BuildingResource = load(item_data.path) as BuildingResource
-		if res and not GameManager.has_purchased(res.building_id):
+		if res and not InventoryManager.has_purchased(res.building_id):
 			var item_row = _create_item_row(res, item_data.cost)
 			items_container.add_child(item_row)
 
@@ -50,7 +61,11 @@ func _create_item_row(res: BuildingResource, cost: int) -> Control:
 	info_vbox.add_child(name_label)
 	
 	var cost_label = Label.new()
-	cost_label.text = "가격: " + str(cost) + " 🦴"
+	var cost_text = "가격: " + str(cost) + " 🦴"
+	var mat_icons = {"wood": "🪵", "stone": "🪨", "dew": "💧"}
+	for mat in res.required_materials.keys():
+		cost_text += " / %s %d" % [mat_icons.get(mat, mat), res.required_materials[mat]]
+	cost_label.text = cost_text
 	info_vbox.add_child(cost_label)
 	
 	hbox.add_child(info_vbox)
@@ -65,11 +80,18 @@ func _create_item_row(res: BuildingResource, cost: int) -> Control:
 	return hbox
 
 func _on_buy_pressed(res: BuildingResource, cost: int) -> void:
-	if GameManager.dog_treats >= cost:
+	var can_afford = GameManager.dog_treats >= cost
+	if can_afford:
+		for mat in res.required_materials.keys():
+			if GameManager.materials.get(mat, 0) < res.required_materials[mat]:
+				can_afford = false
+				break
+				
+	if can_afford:
 		hide()
-		GameManager.start_build_mode.emit(res, cost, "shop")
+		BuildManager.start_build_mode.emit(res, cost, "shop")
 	else:
-		print_debug("[ShopUI] Not enough treats! Need: ", cost, " Have: ", GameManager.dog_treats)
+		print_debug("[ShopUI] Cannot afford building!")
 		_show_insufficient_funds_feedback()
 
 func _show_insufficient_funds_feedback() -> void:

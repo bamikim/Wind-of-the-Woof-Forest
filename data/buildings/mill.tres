@@ -1,8 +1,11 @@
-[gd_resource type="Resource" script_class="BuildingResource" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://bhvxcq1g4mgg4"]
 
-[ext_resource type="Script" path="res://src/core/base/BuildingResource.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/textures/buildings/mill.png" id="2_tex"]
-[ext_resource type="Texture2D" path="res://assets/textures/icons/mill_icon.png" id="3_icon"]
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_8uj3x"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ccv6qdi3jkhf4" path="res://assets/textures/buildings/mill.png" id="2_tex"]
+[ext_resource type="Resource" uid="uid://mill_miss_1_uid" path="res://data/missions/mill_mission_1.tres" id="1_miss"]
+[ext_resource type="Resource" uid="uid://mill_miss_2_uid" path="res://data/missions/mill_mission_2.tres" id="2_miss"]
+[ext_resource type="Resource" uid="uid://mill_miss_3_uid" path="res://data/missions/mill_mission_3.tres" id="3_miss"]
 
 [resource]
 script = ExtResource("1_script")
@@ -10,7 +13,7 @@ building_id = "bone_pinwheel_mill"
 building_name = "뼈다귀 바람개비 방앗간"
 texture = ExtResource("2_tex")
 hframes = 8
-vframes = 1
-animation_fps = 8.0
-icon = ExtResource("3_icon")
-harmony_xp_gain = 50
+animation_fps = 6.0
+visual_offset = Vector2(-20, -60)
+occupied_tiles = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 1), Vector2i(1, 1)])
+available_missions = Array[ExtResource("1_8uj3x")]([ExtResource("1_miss"), ExtResource("2_miss"), ExtResource("3_miss")])

@@ -10,7 +10,7 @@ var resource_library: Dictionary = {}
 
 func _ready() -> void:
 	close_button.pressed.connect(hide)
-	GameManager.inventory_changed.connect(_on_inventory_changed)
+	InventoryManager.inventory_changed.connect(_on_inventory_changed)
 	
 	# 리소스 목록 미리 로드
 	_preload_resources()
@@ -21,7 +21,18 @@ func _preload_resources() -> void:
 	var paths = [
 		"res://data/buildings/mill.tres",
 		"res://data/buildings/pump.tres",
-		"res://data/buildings/postbox.tres"
+		"res://data/buildings/postbox.tres",
+		"res://data/buildings/bamboo_fountain.tres",
+		"res://data/buildings/biscuit_rack.tres",
+		"res://data/buildings/glass_windchime.tres",
+		"res://data/buildings/cloud_observatory.tres",
+		"res://data/buildings/bee_planter.tres",
+		"res://data/buildings/music_stump.tres",
+		"res://data/buildings/vine_streetlight.tres",
+		"res://data/buildings/snack_cart.tres",
+		"res://data/buildings/cloud_waterwheel.tres",
+		"res://data/buildings/balloon_station.tres",
+		"res://data/buildings/nap_rock.tres"
 	]
 	for p in paths:
 		var res: BuildingResource = load(p) as BuildingResource
@@ -34,8 +45,8 @@ func update_bag() -> void:
 		child.queue_free()
 	
 	# 보유 아이템 기반으로 UI 인스턴스 생성
-	for item_id in GameManager.inventory:
-		var amount = GameManager.inventory[item_id]
+	for item_id in InventoryManager.inventory:
+		var amount = InventoryManager.inventory[item_id]
 		if amount > 0 and resource_library.has(item_id):
 			var res = resource_library[item_id]
 			var slot = _create_item_slot(res, amount)
@@ -69,7 +80,8 @@ func _create_item_slot(res: BuildingResource, amount: int) -> Control:
 func _on_place_pressed(res: BuildingResource) -> void:
 	# 가방 숨기고 배치 모드 진입
 	hide()
-	GameManager.start_build_mode.emit(res, 0, "bag")
+	# 배치 모드 요청
+	BuildManager.start_build_mode.emit(res, 0, "bag")
 
 func _on_inventory_changed(_item_id: String, _amount: int) -> void:
 	# 인벤토리 데이터가 변하면 가방이 열려있든 아니든 UI를 업데이트합니다.

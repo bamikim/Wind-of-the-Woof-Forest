@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/ui/main_hud/HarmonyLevelUI.gd" id="1_script"]
 [ext_resource type="Theme" path="res://assets/themes/main_theme.tres" id="2_theme"]
 [ext_resource type="PackedScene" path="res://src/ui/main_hud/ShopUI.tscn" id="3_shop_scene"]
 [ext_resource type="PackedScene" path="res://src/ui/main_hud/BagUI.tscn" id="4_bag_scene"]
+[ext_resource type="PackedScene" path="res://src/ui/popups/ExplorationMapUI.tscn" id="5_map_scene"]
 
 [node name="HarmonyLevelUI" type="Control"]
 layout_mode = 3
@@ -12,41 +13,46 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_script")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="TopPanel" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -300.0
-offset_top = 40.0
-offset_right = 300.0
-offset_bottom = 80.0
+offset_left = -225.0
+offset_top = 20.0
+offset_right = 225.0
+offset_bottom = 70.0
 grow_horizontal = 2
-theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
 alignment = 1
 
-[node name="LevelLabel" type="Label" parent="HBoxContainer"]
+[node name="LevelLabel" type="Label" parent="TopPanel/HBoxContainer"]
 layout_mode = 2
 text = "Lv. 1"
 
-[node name="XPBar" type="TextureProgressBar" parent="HBoxContainer"]
-custom_minimum_size = Vector2(400, 20)
+[node name="XPBar" type="ProgressBar" parent="TopPanel/HBoxContainer"]
+custom_minimum_size = Vector2(300, 20)
 layout_mode = 2
 size_flags_vertical = 4
 value = 50.0
+show_percentage = false
 
 [node name="TreatsContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -200.0
-offset_top = 100.0
-offset_right = -30.0
-offset_bottom = 140.0
+offset_left = -150.0
+offset_top = 90.0
+offset_right = -20.0
+offset_bottom = 130.0
 grow_horizontal = 0
 alignment = 2
 
@@ -58,6 +64,67 @@ text = "🦴"
 layout_mode = 2
 text = "0"
 
+[node name="CookiesContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_top = 130.0
+offset_right = -20.0
+offset_bottom = 170.0
+grow_horizontal = 0
+alignment = 2
+
+[node name="Icon" type="Label" parent="CookiesContainer"]
+layout_mode = 2
+text = "🍪"
+
+[node name="CookiesLabel" type="Label" parent="CookiesContainer"]
+layout_mode = 2
+text = "0"
+
+[node name="MaterialsContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 90.0
+offset_right = 120.0
+offset_bottom = 200.0
+theme_override_constants/separation = 5
+
+[node name="WoodBox" type="HBoxContainer" parent="MaterialsContainer"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="MaterialsContainer/WoodBox"]
+layout_mode = 2
+text = "🪵"
+
+[node name="Label" type="Label" parent="MaterialsContainer/WoodBox"]
+layout_mode = 2
+text = "0"
+
+[node name="StoneBox" type="HBoxContainer" parent="MaterialsContainer"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="MaterialsContainer/StoneBox"]
+layout_mode = 2
+text = "🪨"
+
+[node name="Label" type="Label" parent="MaterialsContainer/StoneBox"]
+layout_mode = 2
+text = "0"
+
+[node name="DewBox" type="HBoxContainer" parent="MaterialsContainer"]
+layout_mode = 2
+
+[node name="Icon" type="Label" parent="MaterialsContainer/DewBox"]
+layout_mode = 2
+text = "💧"
+
+[node name="Label" type="Label" parent="MaterialsContainer/DewBox"]
+layout_mode = 2
+text = "0"
+
 [node name="MenuButtons" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 3
@@ -65,31 +132,38 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -150.0
-offset_right = -30.0
-offset_bottom = -30.0
+offset_left = -160.0
+offset_top = -280.0
+offset_right = -20.0
+offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
-theme_override_constants/separation = 15
+theme_override_constants/separation = 10
 alignment = 2
 
 [node name="ShopButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(120, 50)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "왈왈 상점"
+text = "상점"
+
+[node name="MapButton" type="Button" parent="MenuButtons"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+text = "탐험 지도"
 
 [node name="BagButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(120, 50)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-text = "내 가방"
+text = "가방"
 
 [node name="EditModeButton" type="Button" parent="MenuButtons"]
-custom_minimum_size = Vector2(120, 50)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-theme_type_variation = &"FlatButton"
-theme_override_colors/font_color = Color(1, 0.8, 0, 1)
 text = "배치 모드로"
+
+[node name="ExplorationMapUI" parent="." instance=ExtResource("5_map_scene")]
+visible = false
+layout_mode = 1
 
 [node name="ShopUI" parent="." instance=ExtResource("3_shop_scene")]
 visible = false

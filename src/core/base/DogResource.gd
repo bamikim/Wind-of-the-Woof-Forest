@@ -9,4 +9,9 @@ extends Resource
 @export var texture: Texture2D = null # 기본/미리보기용
 @export var idle_spritesheet: Texture2D = null
 @export var walk_spritesheet: Texture2D = null
-@export var move_speed_multiplier: float = 1.0
+	
+enum Job {NONE, FARMER, CHEF, BAKER, EXPLORER}
+enum Personality {NORMAL, ENERGETIC, METICULOUS, LAZY, CURIOUS}
+
+@export var job: Job = Job.NONE
+@export var personality: Personality = Personality.NORMAL

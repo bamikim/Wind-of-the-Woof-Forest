@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingResource" format=3 uid="uid://862xfdr0rql"]
+
+[ext_resource type="Script" uid="uid://da2dp2d03w1f6" path="res://src/core/base/MissionResource.gd" id="1_eipfg"]
+[ext_resource type="Script" uid="uid://cnq0biwgqbawf" path="res://src/core/base/BuildingResource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://qaajqa3rans3" path="res://assets/textures/buildings/glass_windchime.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+building_id = "glass_windchime"
+building_name = "바람의 노래를 들려주는 투명한 유리 종"
+texture = ExtResource("2_tex")
+hframes = 8
+animation_fps = 6.0
+visual_offset = Vector2(0, -65)

@@ -34,15 +34,18 @@ func _ready() -> void:
 	
 	if dog_data:
 		_apply_dog_data()
+		
+	if navigation_component:
+		navigation_component.navigation_finished.connect(_on_navigation_finished)
+		
 	print_debug("[BaseDog] %s is ready to explore!" % entity_name)
 
 func _physics_process(_delta: float) -> void:
-	if current_state == DogState.WORKING and _target_object:
-		var dist = global_position.distance_to(_target_object.global_position)
-		if dist < 50.0: # 도착 판정 거리
-			_on_reached_target()
-	
 	_update_animation()
+
+func _on_navigation_finished() -> void:
+	if current_state == DogState.WORKING and _target_object:
+		_on_reached_target()
 
 func _update_animation() -> void:
 	if not navigation_component: return
@@ -77,9 +80,23 @@ func _on_wander_timeout() -> void:
 	if current_state != DogState.WANDERING:
 		return
 		
-	# 주변 랜덤 위치로 이동 (반경 300px 내)
-	var random_offset = Vector2(randf_range(-300, 300), randf_range(-300, 300))
-	var target_pos = global_position + random_offset
+	# 주변 랜덤 위치로 이동. 건물 위치를 피해서 최대 5번 재시도합니다.
+	var target_pos = global_position
+	for _attempt in range(5):
+		var random_offset = Vector2(randf_range(-300, 300), randf_range(-300, 300))
+		var candidate = global_position + random_offset
+		var too_close = false
+		
+		var buildings = get_tree().get_nodes_in_group("buildings")
+		for building in buildings:
+			if building.global_position.distance_to(candidate) < 120.0:
+				too_close = true
+				break
+		
+		if not too_close:
+			target_pos = candidate
+			break
+	
 	move_to(target_pos)
 	
 	# 다음 배회 시간 랜덤 설정
@@ -91,9 +108,26 @@ func interact_with(target: Node2D, callback: Callable) -> void:
 	_target_object = target
 	_on_arrival_callback = callback
 	
+	# 건물의 정확한 정면 위치를 가져옵니다.
+	var target_pos = target.get_interaction_position() if target.has_method("get_interaction_position") else target.global_position + Vector2(0, 80)
+	
 	# 자율 이동 중단하고 목표로 이동
-	move_to(target.global_position)
-	print_debug("[BaseDog] %s heading to %s for interaction!" % [entity_name, target.name])
+	move_to(target_pos)
+	print_debug("[BaseDog] %s heading to %s for interaction! (Target Pos: %s)" % [entity_name, target.name, str(target_pos)])
+
+## 강아지가 이미 해당 목표에 위치하여 작업 중인 상태로 강제 전환 (게임 로드 시 사용)
+func force_working_at(target: Node2D) -> void:
+	current_state = DogState.WORKING
+	_target_object = target
+	
+	var target_pos = target.get_interaction_position() if target.has_method("get_interaction_position") else target.global_position + Vector2(0, 80)
+	global_position = target_pos
+	
+	if navigation_component:
+		navigation_component._is_moving = false
+		navigation_component.velocity = Vector2.ZERO
+	_update_animation()
+	print_debug("[BaseDog] %s is instantly working at %s!" % [entity_name, target.name])
 
 func _on_reached_target() -> void:
 	if _on_arrival_callback.is_valid():
@@ -112,7 +146,7 @@ func _apply_dog_data() -> void:
 	if dog_data.texture:
 		sprite.texture = dog_data.texture
 	if navigation_component:
-		navigation_component.speed *= dog_data.move_speed_multiplier
+		pass # 추후 성격 등에 따른 이동 속도 보정 기능 추가 가능
 
 func move_to(target_pos: Vector2) -> void:
 	if navigation_component:
